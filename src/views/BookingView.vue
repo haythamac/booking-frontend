@@ -2,6 +2,11 @@
 import { ref } from 'vue';
 
 const currentStep = ref(1);
+const bookingDate = ref(null);
+
+function showBooking() {
+    console.log(bookingDate.value.toISOString());
+}
 </script>
 
 <template>
@@ -9,6 +14,8 @@ const currentStep = ref(1);
     <div>
         <div v-if="currentStep === 1">
             <h2>Step 1</h2>
+            <h1>ha</h1>
+            <VDatePicker v-model="bookingDate" mode="dateTime" />
         </div>
         <div v-else-if="currentStep === 2">
             <h2>Step 2</h2>
@@ -20,5 +27,6 @@ const currentStep = ref(1);
     <div>
         <button @click="currentStep--" :disabled="currentStep === 1">Back</button>
         <button @click="currentStep++" :disabled="currentStep === 3">Next</button>
+        <button @click="showBooking">Show</button>
     </div>
 </template>
