@@ -12,6 +12,7 @@
   "dependencies": {
     "@popperjs/core": "^2.11.8",
     "@tailwindcss/vite": "^4.2.4",
+    "axios": "^1.16.0",
     "pinia": "^3.0.4",
     "tailwindcss": "^4.2.4",
     "v-calendar": "^3.1.2",
