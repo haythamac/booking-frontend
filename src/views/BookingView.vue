@@ -45,7 +45,10 @@ function confirmButton() {
     bookingAPI.store(data)
         .then(response => {
             alert('Booking confirmed!')
-            router.push('/confirmation')
+            router.push({
+                path: '/confirmation',
+                state: { booking: response.data.data }
+            })
         })
         .catch(error => {
             alert('An error occurred while confirming your booking. Please try again.')
