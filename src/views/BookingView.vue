@@ -1,12 +1,13 @@
 <script setup>
 import { ref } from 'vue';
 import { bookingAPI } from '@/services/booking';
+import { useRouter } from 'vue-router'
 
 const currentStep = ref(1);
 const bookingDate = ref(null);
-import { useRouter } from 'vue-router'
 
 const router = useRouter()
+
 const form = ref({
     customer_name: '',
     customer_email: '',
@@ -14,26 +15,58 @@ const form = ref({
     notes: ''
 })
 
+const errors = ref({
+    bookingDate: '',
+    customer_name: '',
+    customer_email: '',
+    customer_phone: '',
+})
 
+function validateStep() {
+    if (currentStep.value === 1) {
+        if (!bookingDate.value) {
+            errors.value.bookingDate = 'Date is required'
+            return false
+        }
+        errors.value.bookingDate = ''
+    } else if (currentStep.value === 2) {
+        if (!form.value.customer_name) errors.value.customer_name = 'Name is required'
+        else errors.value.customer_name = ''
 
-function showBooking() {
-    console.log(bookingDate.value.toISOString().slice(0, 19));
+        if (!form.value.customer_phone) errors.value.customer_phone = 'Phone is required'
+        else errors.value.customer_phone = ''
+
+        const phoneRegex = /^(09|\+63)\d{9}$/
+        if (!phoneRegex.test(form.value.customer_phone)) {
+            errors.value.customer_phone = 'Please enter a valid PH phone number (09XXXXXXXXX)'
+        } else {
+            errors.value.customer_phone = ''
+        }
+
+        if (form.value.customer_email && !form.value.customer_email.includes('@')) {
+            errors.value.customer_email = 'Please enter a valid email'
+        } else {
+            errors.value.customer_email = ''
+        }
+
+        const hasErrors = Object.values(errors.value).some(error => error !== '')
+        if (hasErrors) return false
+    }
+    return true
 }
 
+function nextStep() {
+    if (validateStep()) currentStep.value++
+}
 
 function confirmButton() {
-    if (!bookingDate.value) {
-        alert('Please select a date and time')
-        return
-    }
-    if (!form.value.customer_name) {
-        alert('Please enter your name')
-        return
-    }
-    if (!form.value.customer_phone) {
-        alert('Please enter your phone number')
-        return
-    }
+    if (!bookingDate.value) errors.value.bookingDate = 'Date is required'
+    if (!form.value.customer_name) errors.value.customer_name = 'Name is required'
+    if (!form.value.customer_phone) errors.value.customer_phone = 'Phone is required'
+
+    const hasErrors = Object.values(errors.value).some(error => error !== '')
+    if (hasErrors) return
+
     const data = {
         booking_date: bookingDate.value.toISOString().slice(0, 19),
         customer_name: form.value.customer_name,
@@ -66,16 +99,23 @@ function confirmButton() {
             <h2>Step 1</h2>
             <h1>ha</h1>
             <VDatePicker v-model="bookingDate" mode="dateTime" />
+            <p v-if="errors.bookingDate" class="text-red-500 text-sm">{{ errors.bookingDate }}</p>
         </div>
         <div v-else-if="currentStep === 2">
             <h2>Step 2</h2>
             <form>
                 <label for="customer_name">Name:</label>
                 <input type="text" id="customer_name" v-model="form.customer_name" />
+                <p v-if="errors.customer_name" class="text-red-500 text-sm">{{ errors.customer_name }}</p>
+
                 <label for="customer_email">Email:</label>
                 <input type="email" id="customer_email" v-model="form.customer_email" />
+                <p v-if="errors.customer_email" class="text-red-500 text-sm">{{ errors.customer_email }}</p>
+
                 <label for="customer_phone">Phone:</label>
                 <input type="tel" id="customer_phone" v-model="form.customer_phone" />
+                <p v-if="errors.customer_phone" class="text-red-500 text-sm">{{ errors.customer_phone }}</p>
+
                 <label for="notes">Notes:</label>
                 <textarea id="notes" v-model="form.notes"></textarea>
             </form>
@@ -92,8 +132,7 @@ function confirmButton() {
     </div>
     <div>
         <button @click="currentStep--" :disabled="currentStep === 1">Back</button>
-        <button @click="currentStep++" v-if="currentStep !== 3">Next</button>
+        <button @click="nextStep" v-if="currentStep !== 3">Next</button>
         <button @click="confirmButton" v-if="currentStep === 3">Confirm</button>
-        <button @click="showBooking">Show</button>
     </div>
 </template>
