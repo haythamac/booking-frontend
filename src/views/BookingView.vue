@@ -93,7 +93,7 @@ function confirmButton() {
 </script>
 
 <template>
-    <div class="mx-auto max-w-4xl my-10 p-5 border border-amber-400 rounded-4xl shadow-md">
+    <div class="mx-auto max-w-4xl my-10 py-6 px-12 border border-amber-400 rounded-4xl shadow-md">
         <div class="flex justify-between mb-8 my-4">
             <div class="flex gap-2">
                 <p class="bg-green-700 rounded-full w-8 h-8 flex items-center justify-center mx-auto"></p>
@@ -137,27 +137,34 @@ function confirmButton() {
             <div v-else-if="currentStep === 2">
                 <h2 class="text-3xl mb-4">Your Details</h2>
                 <p class="mb-4 text-gray-700">We'll use this to confirm your appointment.</p>
-                <form class="flex flex-col gap-4">
-                    <div class="flex justify-between items-center">
-                        <div class="flex flex-col">
+                <form class="flex flex-col gap-8">
+                    <div class="flex justify-between items-center gap-8">
+                        <div class="flex flex-col flex-1">
                             <label for="customer_name">Name</label>
-                            <input type="text" id="customer_name" v-model="form.customer_name" />
+                            <input type="text" id="customer_name"
+                                class="border border-gray-300 rounded-md shadow-md px-3 py-2" placeholder="Jane Doe"
+                                v-model="form.customer_name" />
                             <p v-if="errors.customer_name" class="text-red-500 text-sm">{{ errors.customer_name }}</p>
                         </div>
 
-                        <div>
+                        <div class="flex flex-col flex-1">
                             <label for="customer_phone">Phone</label>
-                            <input type="tel" id="customer_phone" v-model="form.customer_phone" />
+                            <input type="tel" id="customer_phone"
+                                class="border border-gray-300 rounded-md shadow-md px-3 py-2"
+                                placeholder="+639 99 999 9999" v-model="form.customer_phone" />
                             <p v-if="errors.customer_phone" class="text-red-500 text-sm">{{ errors.customer_phone }}</p>
                         </div>
                     </div>
-                    <div>
+                    <div class="flex flex-col">
                         <label for="customer_email">Email</label>
-                        <input type="email" id="customer_email" v-model="form.customer_email" />
+                        <input type="email" id="customer_email"
+                            class="border border-gray-300 rounded-md shadow-md px-3 py-2" placeholder="you@example.com"
+                            v-model="form.customer_email" />
                         <p v-if="errors.customer_email" class="text-red-500 text-sm">{{ errors.customer_email }}</p>
                     </div>
                     <label for="notes">Notes (Optional)</label>
-                    <textarea id="notes" v-model="form.notes"></textarea>
+                    <textarea id="notes" class="border border-gray-300 rounded-md shadow-md px-3 py-2"
+                        placeholder="Anything we should know?" v-model="form.notes"></textarea>
                 </form>
             </div>
             <div v-else>
